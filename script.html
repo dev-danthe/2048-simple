@@ -1,0 +1,190 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const tabuleiro = document.querySelector('#tabuleiro');
+    const casas = [];
+    const width = 4;
+    let score = 0;
+
+    function criarTabuleiro() {
+        for (let i = 0; i < width * width; i++) {
+            const peca = document.createElement('div');
+            peca.setAttribute('value', 0);
+            peca.innerHTML = '';
+            peca.classList.add('peca');
+            tabuleiro.appendChild(peca);
+            casas.push(peca);
+        }
+    }
+
+    function gerarNumero() {
+        let posicoesVazias = casas.filter(casa => casa.getAttribute('value') == 0);
+        if (posicoesVazias.length === 0) {
+            verificarFimDeJogo();
+            return;
+        }
+
+        const posicao = Math.floor(Math.random() * posicoesVazias.length);
+        const casa = posicoesVazias[posicao];
+        const valor = Math.random() > 0.3 ? 2 : 4;
+        casa.setAttribute('value', valor);
+        casa.innerHTML = valor;
+    }
+
+    function somar(casa1, casa2) {
+        const valor1 = parseInt(casa1.getAttribute('value'));
+        const valor2 = parseInt(casa2.getAttribute('value'));
+        const soma = valor1 + valor2;
+        casa1.setAttribute('value', soma);
+        casa1.innerHTML = soma;
+        casa2.setAttribute('value', 0);
+        casa2.innerHTML = '';
+        scoreUp(soma);
+    }
+
+    function scoreUp(soma) {
+        const scoreAtual = document.querySelector('#pontuacao');
+        score += soma;
+        scoreAtual.innerHTML = score;
+    }
+
+    function moverEsquerda() {
+        for (let i = 0; i < width * width; i++) {
+            if (i % width === 0) {
+                let linha = [];
+                for (let j = 0; j < width; j++) {
+                    linha.push(parseInt(casas[i + j].getAttribute('value')));
+                }
+                let novaLinha = linha.filter(num => num);
+                let zeros = Array(width - novaLinha.length).fill(0);
+                novaLinha = novaLinha.concat(zeros);
+
+                for (let j = 0; j < width; j++) {
+                    casas[i + j].setAttribute('value', novaLinha[j]);
+                    casas[i + j].innerHTML = novaLinha[j] ? novaLinha[j] : '';
+                }
+            }
+        }
+    }
+
+    function moverDireita() {
+        for (let i = 0; i < width * width; i++) {
+            if (i % width === 0) {
+                let linha = [];
+                for (let j = 0; j < width; j++) {
+                    linha.push(parseInt(casas[i + j].getAttribute('value')));
+                }
+                let novaLinha = linha.filter(num => num);
+                let zeros = Array(width - novaLinha.length).fill(0);
+                novaLinha = zeros.concat(novaLinha);
+
+                for (let j = 0; j < width; j++) {
+                    casas[i + j].setAttribute('value', novaLinha[j]);
+                    casas[i + j].innerHTML = novaLinha[j] ? novaLinha[j] : '';
+                }
+            }
+        }
+    }
+
+    function moverCima() {
+        for (let i = 0; i < width; i++) {
+            let coluna = [];
+            for (let j = 0; j < width; j++) {
+                coluna.push(parseInt(casas[i + j * width].getAttribute('value')));
+            }
+            let novaColuna = coluna.filter(num => num);
+            let zeros = Array(width - novaColuna.length).fill(0);
+            novaColuna = novaColuna.concat(zeros);
+
+            for (let j = 0; j < width; j++) {
+                casas[i + j * width].setAttribute('value', novaColuna[j]);
+                casas[i + j * width].innerHTML = novaColuna[j] ? novaColuna[j] : '';
+            }
+        }
+    }
+
+    function moverBaixo() {
+        for (let i = 0; i < width; i++) {
+            let coluna = [];
+            for (let j = 0; j < width; j++) {
+                coluna.push(parseInt(casas[i + j * width].getAttribute('value')));
+            }
+            let novaColuna = coluna.filter(num => num);
+            let zeros = Array(width - novaColuna.length).fill(0);
+            novaColuna = zeros.concat(novaColuna);
+
+            for (let j = 0; j < width; j++) {
+                casas[i + j * width].setAttribute('value', novaColuna[j]);
+                casas[i + j * width].innerHTML = novaColuna[j] ? novaColuna[j] : '';
+            }
+        }
+    }
+
+    function combinarLinha() {
+        for (let i = 0; i < width * width - 1; i++) {
+            if (i % width !== width - 1) {
+                const casa1 = casas[i];
+                const casa2 = casas[i + 1];
+                if (casa1.getAttribute('value') === casa2.getAttribute('value')) {
+                    somar(casa1, casa2);
+                }
+            }
+        }
+    }
+
+    function combinarColuna() {
+        for (let i = 0; i < width * (width - 1); i++) {
+            const casa1 = casas[i];
+            const casa2 = casas[i + width];
+            if (casa1.getAttribute('value') === casa2.getAttribute('value')) {
+                somar(casa1, casa2);
+            }
+        }
+    }
+
+    function controle(e) {
+        if (e.keyCode === 37) {
+            moverEsquerda();
+            combinarLinha();
+            moverEsquerda();
+            gerarNumero();
+        } else if (e.keyCode === 38) {
+            moverCima();
+            combinarColuna();
+            moverCima();
+            gerarNumero();
+        } else if (e.keyCode === 39) {
+            moverDireita();
+            combinarLinha();
+            moverDireita();
+            gerarNumero();
+        } else if (e.keyCode === 40) {
+            moverBaixo();
+            combinarColuna();
+            moverBaixo();
+            gerarNumero();
+        }
+    }
+
+    function verificarFimDeJogo() {
+        let posicoesVazias = casas.filter(casa => casa.getAttribute('data-value') == 0);
+        if (posicoesVazias.length === 0) {
+            alert(`Jogo acabou! Seu score foi: ${score}`);
+            resetarJogo();
+        }
+    }
+
+    function resetarJogo() {
+        let soma = score - 2*score;
+        casas.forEach(casa => {
+            casa.setAttribute('data-value', 0);
+            casa.innerHTML = '';
+            casa.getAttribute('value') = 0;
+        });
+        scoreUp(soma);
+        gerarNumero();
+    }
+
+    document.addEventListener('keyup', controle);
+
+    criarTabuleiro();
+    gerarNumero();
+});
