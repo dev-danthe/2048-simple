@@ -1,0 +1,53 @@
+body {
+    background: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#tabuleiro {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 10px; 
+    background: #929292;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.peca {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #b6b6b6;
+    color: #111;
+    font-size: 2em;
+    cursor: pointer;
+    width: 4em;
+    height: 4em;
+    border-radius: 10px;
+}
+
+.peca[value="2"] { background: #e6e6fa; color: #776e65; }
+.peca[value="4"] { background: #d8bfd8; color: #776e65; }
+.peca[value="8"] { background: #dda0dd; color: #f9f6f2; }
+.peca[value="16"] { background: #ee82ee; color: #f9f6f2; }
+.peca[value="32"] { background: #da70d6; color: #f9f6f2; }
+.peca[value="64"] { background: #ba55d3; color: #f9f6f2; }
+.peca[value="128"] { background: #9932cc; color: #f9f6f2; }
+.peca[value="256"] { background: #9400d3; color: #f9f6f2; }
+.peca[value="512"] { background: #8a2be2; color: #f9f6f2; }
+.peca[value="1024"] { background: #7b68ee; color: #f9f6f2; }
+.peca[value="2048"] { background: #6a5acd; color: #f9f6f2; }
+
+span {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-weight: bold;
+    color: white;
+  }
